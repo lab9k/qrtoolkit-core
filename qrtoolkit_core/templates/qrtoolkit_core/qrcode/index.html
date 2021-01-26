@@ -1,0 +1,22 @@
+{% extends 'api/layout.html' %} {% block title %}
+<title>Basic information page</title>
+{% endblock title %} {% block content %}
+<div class="container">
+  <div class="card mt-5">
+    <div class="card-title p-3">
+      <h1>{{ qrcode.title }}</h1>
+      <div class="card-subtitle">{{ qrcode.created }}</div>
+    </div>
+    <div class="card-body">
+      <div class="card-text">
+        <p>{{ qrcode.basic_info }}</p>
+        <ul>
+          {% for url in qrcode.urls.all %}
+          <li><a href="{{url.url}}">{{url.name}}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

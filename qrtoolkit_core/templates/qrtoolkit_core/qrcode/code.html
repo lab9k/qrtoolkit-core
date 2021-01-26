@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <title>{{ code.title }}</title>
+</head>
+
+<body>
+    <img src="http://qrcodeservice.herokuapp.com/?query={{ request.scheme }}://{{ request.get_host }}/{{code.uuid}}" />
+</body>
+
+</html>

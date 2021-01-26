@@ -1,0 +1,15 @@
+{% extends 'api/layout.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    {% for code in codes %}
+    <div class="col-sm text-center">
+      <p class="text-center">{{code.title}}</p>
+      <img src="https://qrcodeservice.herokuapp.com/?query={{ request.scheme }}://{{ request.get_host }}/{{code.uuid}}"
+        alt="{{ code.title }}" title="{{code.title}}.svg" />
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock content %}

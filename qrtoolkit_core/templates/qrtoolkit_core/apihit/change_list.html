@@ -1,0 +1,263 @@
+{% extends 'admin/change_list.html' %}
+{% load admin_list %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css"
+            integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK"
+            crossorigin="anonymous"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"
+            integrity="sha512-d9xgZrVZpmmQlfonhQUvTR7lMPtO7NkZMkA0ABN3PHCbKA5nqylQ/yWlFAyY6hYgdF1Qh6nYiuADWwKB4C2WSw=="
+            crossorigin="anonymous"></script>
+    <script>
+
+        const App = {
+            init(deptname) {
+                this.initState(deptname).then(
+                    () => {
+                        this.drawChart();
+                        this.drawLineChart();
+                    }
+                );
+            },
+            initState(deptname) {
+                this.state = {
+                    elements: {
+                        donutchart: null,
+                        linechart: null,
+                        donutCtx: document.getElementById('mchart'),
+                        lineCtx: document.getElementById('linechart').getContext('2d'),
+                        deptname: deptname
+                    },
+                    data: [],
+                    labels: []
+                };
+                const params = new URLSearchParams(window.location.search)
+                const querystring = params.has('code__department__name') ?
+                    `?dept=${params.get('code__department__name')}` : ''
+
+                const url = `/api/apihits/${querystring}`
+                return fetch(url).then(res => res.json()).then(hits => {
+                    console.log(hits)
+                    this.state.data = hits;
+                    this.state.labels = [...new Set(hits.map(el => el.action))];
+                })
+            },
+            drawChart() {
+                if (this.state.elements.donutchart) {
+                    this.state.elements.donutchart.destroy()
+                }
+                this.state.elements.donutchart = new Chart(
+                    this.state.elements.donutCtx,
+                    {
+                        type: 'doughnut',
+                        data: {
+                            labels: this.state.labels,
+                            datasets: [
+                                {
+                                    label: '# of hits',
+                                    data: this.state.data.reduce((acc, curr) => {
+                                        const actionIndex = this.state.labels.findIndex(el => el === curr.action)
+                                        acc[actionIndex] += 1
+                                        return acc
+                                    }, (new Array(this.state.labels.length).fill(0))),
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                        'rgba(255, 206, 86, 0.2)',
+                                        'rgba(75, 192, 192, 0.2)',
+                                        'rgba(153, 102, 255, 0.2)',
+                                        'rgba(255,159,64,0.2)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }
+                            ]
+                        },
+                        options: {
+                            scales: {},
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            onClick: (ev, clickedOn) => {
+                                if (clickedOn.length > 0) {
+                                    const id = clickedOn[0]._index;
+                                    const label = this.state.labels[id];
+                                    fetch(`/api/apihits/?action=${label}`).then(res => res.json()).then(hits => console.log(hits))
+                                }
+                            }
+                        }
+                    }
+                )
+            },
+            drawLineChart() {
+                const data = this.state.data;
+                const mapped_data = data.filter(el => el.action !== 'error').map(hit => {
+                    console.log(hit);
+                    return {
+                        t: moment.utc(hit.hit_date, "YYYY-MM-DDTHH:mm:ss.SSSSZ").startOf('day').format("YYYY-MM-DD"),
+                        y: Math.random() * 10
+                    }
+                }).reduce((acc, curr) => {
+                    let found = acc.find(el => el.t === curr.t)
+                    if (!found) {
+                        acc.push({...curr, y: 1});
+                    } else {
+                        found.y += 1;
+                    }
+                    return acc
+                }, []);
+
+
+                if (this.state.elements.linechart) {
+                    this.state.elements.linechart.destroy();
+                }
+
+                this.state.elements.linechart = new Chart(
+                    this.state.elements.lineCtx, {
+                        type: 'line',
+                        data: {
+                            labels: this.state.labels,
+                            datasets: [{
+                                label: `Successful ${this.state.elements.deptname}hits`,
+                                data: mapped_data,
+                                type: 'line',
+                                pointRadius: 4,
+                                fill: false,
+                                lineTension: 0,
+                                borderWidth: 2,
+                                backgroundColor: 'rgba(29,96,24,0.2)',
+                                borderColor: 'rgba(57,186,47,1)',
+                            },
+                                {
+                                    label: `Erroneous ${this.state.elements.deptname}hits`,
+                                    data: data.filter(el => el.action === 'error').map(hit => {
+                                        console.log(hit);
+                                        return {
+                                            t: moment.utc(hit.hit_date, "YYYY-MM-DDTHH:mm:ss.SSSSZ").startOf('day').format("YYYY-MM-DD"),
+                                            y: Math.random() * 10
+                                        }
+                                    }).reduce((acc, curr) => {
+                                        let found = acc.find(el => el.t === curr.t)
+                                        if (!found) {
+                                            acc.push({...curr, y: 1});
+                                        } else {
+                                            found.y += 1;
+                                        }
+                                        return acc
+                                    }, []),
+                                    type: 'line',
+                                    pointRadius: 4,
+                                    fill: false,
+                                    lineTension: 0,
+                                    borderWidth: 2,
+                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                    borderColor: 'rgba(255, 99, 132, 1)',
+                                }]
+                        },
+                        options: {
+                            scales: {
+                                xAxes: [{
+                                    label: 'date',
+                                    type: 'time',
+                                    distribution: 'series',
+                                    offset: true,
+                                    ticks: {
+                                        major: {
+                                            enabled: true,
+                                            fontStyle: 'bold'
+                                        },
+                                        source: 'data',
+                                        autoSkip: true,
+                                        autoSkipPadding: 75,
+                                        maxRotation: 0,
+                                        sampleSize: 100
+                                    },
+                                    time: {
+                                        displayFormats: {
+                                            day: 'DD/MM/YY',
+                                            year: 'DD/MM/YY'
+                                        }
+                                    }
+                                }],
+                                yAxes: [{
+                                    gridLines: {
+                                        drawBorder: true
+                                    },
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Hits on day'
+                                    },
+                                    ticks: {
+                                        callback: function (value, index, values) {
+                                            // hide decimal lines
+                                            return `${value}`.split('.').length > 1 ? null : value
+                                        }
+                                    }
+                                }]
+                            }
+                        }
+                    }
+                );
+
+
+            }
+        };
+
+        window.onload = function () {
+            const title = document.getElementById('filtertitle');
+
+            const params = new URLSearchParams(window.location.search)
+            const deptName = params.has('code__department__name') ?
+                `${params.get('code__department__name')} ` : ''
+
+            if (deptName) {
+                title.innerText = `Overview: ${deptName}`
+            } else {
+                title.innerText = 'Overview: all departments'
+            }
+
+            App.init(deptName);
+
+        }
+    </script>
+{% endblock %}
+
+{% comment %}{% block object-tools-items %}
+    {% change_list_object_tools %}
+    <li>
+        <a href="./analytics" class="viewlink">
+            Analytics
+        </a>
+    </li>
+{% endblock %}{% endcomment %}
+{% block content %}
+    <h1 style="font-weight: 300; font-size: 20px;color: #666;margin: 20px 0 20px"> Graphs </h1>
+    <hr>
+    <h3 id="filtertitle" style="font-weight: 200; font-size: 18px;color: #666;margin: 20px 0 20px"></h3>
+    <div class="row">
+        <div class="col-sm-4">
+            <canvas id="mchart" style="width: 500px !important;"></canvas>
+        </div>
+        <div class="col-sm-4">
+            <canvas id="linechart" style="width: 200px !important;"></canvas>
+        </div>
+    </div>
+    <hr/>
+    {% block content_title %}
+    {% endblock %}
+    {% if title %}<h1 style="font-weight: 300; font-size: 20px;color: #666;margin: 20px 0 20px">{{ title }}</h1>
+    {% endif %}
+
+    {{ block.super }}
+{% endblock %}

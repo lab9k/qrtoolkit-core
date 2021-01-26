@@ -1,0 +1,52 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script src="{% static 'js/qr-code-scanner.min.js' %}"></script>
+{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+        &rsaquo; <a href="{% url 'admin:api_qrcode_changelist' %}">QrCode</a> &rsaquo; Scan
+    </div>
+{% endblock %}
+
+{% block content %}
+    <qr-code-scanner id="myScanner"></qr-code-scanner>
+    <a href="../add?uuid=%uuid%" style="display: none;visibility: hidden" id="new-code"></a>
+    <a href="../%id%/change" style="display: none;visibility: hidden" id="update-code"></a>
+    <pre>
+        <code id="error"></code>
+        <code id="response"></code>
+    </pre>
+    <script>
+        const error = document.getElementById('error');
+        const response = document.getElementById('response');
+        const scanner = document.getElementById('myScanner');
+
+        scanner.setAttribute('allowed-hosts', ['qr.stad.gent', 'localhost:8000']);
+        // scanner.setAttribute('authorization', 'basic ' + btoa('foo:bar'));
+
+        scanner.addEventListener('error', async ({detail}) => {
+            if (detail[0].status === 404) {
+                const url = new URL(detail[0].url)
+                const newCodeLink = document.getElementById('new-code')
+                newCodeLink.href = newCodeLink.href.replace('%uuid%', url.pathname.replace(/\//g, ''))
+                newCodeLink.click();
+            } else {
+                error.innerText = detail[0].message
+            }
+        });
+        scanner.addEventListener('decode', async ({detail}) => {
+            const code = await detail[0].json()
+            const updateCodeLink = document.getElementById('update-code');
+            updateCodeLink.href = updateCodeLink.href.replace('%id%', code.id)
+            updateCodeLink.click()
+            response.innerText = JSON.stringify();
+        });
+
+    </script>
+{% endblock %}
