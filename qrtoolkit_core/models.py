@@ -67,11 +67,11 @@ class QRCode(models.Model):
 
     title = models.CharField(blank=True, default='', max_length=100, unique=True)
     department = models.ForeignKey(
-        to=Department, on_delete=models.CASCADE, related_name='qrcodes')
+        to=Department, on_delete=models.CASCADE, related_name='qrcodes', blank=True, null=True)
 
     uuid = models.UUIDField(
         default=uuid.uuid4,
-        editable=False
+        editable=True
     )
     short_uuid = models.SlugField(
         unique=True,
