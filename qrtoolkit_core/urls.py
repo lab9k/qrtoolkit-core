@@ -25,7 +25,7 @@ api_routes = [path('', include(router.urls)),
               ]
 
 
-def get_code_routes():
+def _get_code_routes():
     redirect_routes = [
         # url that ill be scanned
         path('<slug:short_uuid>/', views.QRCodeDetails.as_view(), name='qrcode-detail')
@@ -38,4 +38,4 @@ def get_code_routes():
     return redirect_routes + info_routes
 
 
-code_routes = get_code_routes()
+code_routes = _get_code_routes()

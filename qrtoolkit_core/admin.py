@@ -2,12 +2,13 @@ import requests
 import io
 import zipfile
 
+from django.conf import settings
 from django.contrib import admin
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
 from django.utils.safestring import mark_safe
 from reversion.admin import VersionAdmin
-from django.urls import path, reverse
+from django.urls import path
 
 from .models import ApiHit, Department, LinkUrl, QRCode
 
@@ -49,10 +50,12 @@ class QRCodeAdmin(VersionAdmin):
         return super(QRCodeAdmin, self).get_model_perms(request)
 
     def get_code_image_url(self, obj):
-        return mark_safe(f'<span><a href="/code/{obj.short_uuid}">/code/{obj.short_uuid}</a></span>')
+        return mark_safe(
+            f'<span><a href="{settings.REDIRECT_SERVICE_URL}/code/{obj.short_uuid}">/code/{obj.short_uuid}</a></span>')
 
     def get_code_url(self, obj):
-        return mark_safe(f'<span><a href="/{obj.short_uuid}">/{obj.short_uuid}</a></span>')
+        return mark_safe(
+            f'<span><a href="{settings.REDIRECT_SERVICE_URL}/{obj.short_uuid}">/{obj.short_uuid}</a></span>')
 
     get_code_image_url.short_description = 'Code image'
     get_code_url.short_description = 'Code url'
@@ -65,7 +68,7 @@ class QRCodeAdmin(VersionAdmin):
 
         downloaded_files = []
         for code in queryset.all():
-            url = request.build_absolute_uri(reverse('code-dl', kwargs=dict(uuid=code.uuid)))
+            url = settings.REDIRECT_SERVICE_URL + f'/code/{code.short_uuid}/dl/'
             res = requests.get(url)
             zf.writestr(f'{code.title}-{code.uuid}.svg', res.content)
             downloaded_files.append(code.title)
@@ -110,4 +113,4 @@ class DepartmentAdmin(admin.ModelAdmin):
 
 admin.site.site_header = 'Qr Gent Administration'
 admin.site.site_title = 'Qr Gent admin'
-admin.site.site_url = '/api/'
+admin.site.site_url = settings.API_URL

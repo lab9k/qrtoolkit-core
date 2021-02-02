@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotAuthenticated
 from .models import ApiHit, QRCode
 from django.http import Http404, HttpResponse
+from django.conf import settings
 from rest_framework.views import APIView
 from django.shortcuts import redirect
 from django.core.exceptions import ValidationError
@@ -67,7 +68,7 @@ def download_code(request, short_uuid):
 
 
 class CodeView(DetailView):
-    template_name = 'api/qrcode/code.html'
+    template_name = 'qrtoolkit_core/qrcode/code.html'
     pk_url_kwarg = 'short_uuid'
     queryset = QRCode.objects.all()
     context_object_name = 'code'
@@ -115,7 +116,7 @@ class QRCodeDetails(APIView):
                 hit = ApiHit(
                     code=qrcode, action=ApiHit.ACTION_CHOICES.JSON)
                 hit.save()
-                return redirect(to=reverse('api-code-detail', kwargs={'pk': qrcode.id}), permanent=False)
+                return redirect(to=f'{settings.API_URL}/qrcodes/{qrcode.id}/', permanent=False)
             else:
                 raise NotAuthenticated
 
@@ -144,4 +145,4 @@ class QRCodeDetails(APIView):
         hit = ApiHit(
             code=qrcode, action=ApiHit.ACTION_CHOICES.JSON)
         hit.save()
-        return redirect(to=reverse('api-code-detail', kwargs={'pk': qrcode.id}), permanent=False)
+        return redirect(to=f'{settings.API_URL}/qrcodes/{qrcode.id}/', permanent=False)
