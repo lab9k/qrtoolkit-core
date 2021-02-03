@@ -124,7 +124,7 @@ class QRCodeDetails(APIView):
             if qrcode.urls.count() == 0:
                 hit = ApiHit(code=qrcode, action=ApiHit.ACTION_CHOICES.BASIC_INFO)
                 hit.save()
-                return Response({'qrcode': qrcode}, template_name='api/qrcode/index.html')
+                return Response({'qrcode': qrcode}, template_name='qrtoolkit_core/qrcode/index.html')
 
             if qrcode.mode == QRCode.REDIRECT_MODE_CHOICES.REDIRECT:
                 hit = ApiHit(
@@ -134,13 +134,13 @@ class QRCodeDetails(APIView):
             if qrcode.mode == QRCode.REDIRECT_MODE_CHOICES.KIOSK:
                 hit = ApiHit(code=qrcode, action=ApiHit.ACTION_CHOICES.KIOSK)
                 hit.save()
-                return Response({'qrcode': qrcode}, template_name='api/qrcode/kiosk.html')
+                return Response({'qrcode': qrcode}, template_name='qrtoolkit_core/qrcode/kiosk.html')
             if qrcode.mode == QRCode.REDIRECT_MODE_CHOICES.INFO_PAGE:
                 hit = ApiHit(code=qrcode, action=ApiHit.ACTION_CHOICES.BASIC_INFO)
                 hit.save()
-                return Response({'qrcode': qrcode}, template_name='api/qrcode/index.html')
+                return Response({'qrcode': qrcode}, template_name='qrtoolkit_core/qrcode/index.html')
 
-            return Response({'qrcode': qrcode}, template_name='api/qrcode/index.html')
+            return Response({'qrcode': qrcode}, template_name='qrtoolkit_core/qrcode/index.html')
 
         hit = ApiHit(
             code=qrcode, action=ApiHit.ACTION_CHOICES.JSON)
