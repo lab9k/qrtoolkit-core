@@ -16,7 +16,7 @@ class LinkUrlSerializer(serializers.ModelSerializer):
 
 class QRCodeSerializer(serializers.ModelSerializer):
     urls = LinkUrlSerializer(many=True, read_only=True)
-    department = DepartmentSerializer(read_only=True)
+    department = serializers.PrimaryKeyRelatedField(required=False, allow_null=True)
 
     # image_url = serializers.SerializerMethodField(method_name='get_image_url', read_only=True)
     # download_url = serializers.SerializerMethodField(method_name='get_dl_url', read_only=True)
