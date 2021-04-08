@@ -112,13 +112,15 @@ class QRCodeDetails(APIView):
         qrcode = self.get_object(short_uuid=short_uuid)
 
         if request.accepted_renderer.format == 'json' or format == 'json':
-            if request.user.is_authenticated:
-                hit = ApiHit(
-                    code=qrcode, action=ApiHit.ACTION_CHOICES.JSON)
-                hit.save()
-                return redirect(to=f'{settings.API_URL}/qrcodes/{qrcode.id}/', permanent=False)
-            else:
+            hit = ApiHit(
+                code=qrcode, action=ApiHit.ACTION_CHOICES.JSON)
+            hit.save()
+            response = redirect(to=f'{settings.API_URL}/qrcodes/{qrcode.id}/', permanent=False)
+            auth_header = request.headers.get('apiKey')
+            if auth_header is None:
                 raise NotAuthenticated
+            response['apiKey'] = auth_header
+            return response
 
         if request.accepted_renderer.format == 'html' or format == 'html':
             if qrcode.urls.count() == 0:
