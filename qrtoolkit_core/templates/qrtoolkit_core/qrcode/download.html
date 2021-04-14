@@ -1,0 +1,25 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+        &rsaquo; <a href="{% url 'admin:qrtoolkit_core_qrcode_changelist' %}">QrCode</a> &rsaquo; Download
+    </div>
+{% endblock %}
+
+{% block content %}
+    <h3>Downloading codes for: </h3>
+    <ul>
+        {% for code in codes %}
+            <li>{{ code }}</li>
+        {% endfor %}
+    </ul>
+    <h3>Settings</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Download</button>
+    </form>
+{% endblock %}

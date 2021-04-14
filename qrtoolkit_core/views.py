@@ -9,62 +9,7 @@ from rest_framework.views import APIView
 from django.shortcuts import redirect
 from django.core.exceptions import ValidationError
 from django.views.generic import DetailView
-import requests
 import uuid
-
-
-def download_code(request, short_uuid):
-    if request.user.is_authenticated:
-        try:
-            short_uuid = uuid.UUID(short_uuid)
-            # short_uuid is a valid uuid object
-            code, created = QRCode.objects.get_or_create(uuid=short_uuid,
-                                                         defaults={'department': request.user.department})
-        except ValueError:
-            # short_uuid is not a valid uuid object
-            code, created = QRCode.objects.get_or_create(short_uuid=short_uuid,
-                                                         defaults={'department': request.user.department})
-        if created:
-            code.title = request.GET.get('title', 'Auto Generated Code')
-            code.save()
-    else:
-        try:
-            short_uuid = uuid.UUID(short_uuid)
-            # short_uuid is a valid uuid object
-            code = QRCode.objects.get(uuid=short_uuid)
-        except ValueError:
-            # short_uuid is not a valid uuid object
-            code = QRCode.objects.get(short_uuid=short_uuid)
-
-    code_url = request.build_absolute_uri(reverse("qrcode-detail", kwargs=dict(short_uuid=code.short_uuid)))
-    image_url = f'http://qrcodeservice.herokuapp.com/?query={code_url}'
-    image_resp = requests.get(image_url).text
-
-    response = HttpResponse(image_resp, content_type='image/svg+xml')
-    response['Content-Length'] = len(response.content)
-    response['Content-Disposition'] = f'attachment; filename="{code.title}.svg"'
-    return response
-
-
-# @login_required
-# def generate(request, amount):
-#     zip_filename = 'generated_codes.zip'
-#     s = io.BytesIO()
-#
-#     zf = zipfile.ZipFile(s, mode='w', compression=zipfile.ZIP_DEFLATED)
-#     uuids = [uuid.uuid4() for _ in range(amount)]
-#
-#     for uid in uuids:
-#         code_url = request.build_absolute_uri(reverse('qrcode-detail', kwargs=dict(short_uuid=uid)))
-#         image_url = f'http://qrcodeservice.herokuapp.com/?query={code_url}'
-#         res = requests.get(image_url)
-#         zf.writestr(f'Auto Generated Code-{uid}.svg', res.content)
-#
-#     zf.close()
-#
-#     resp = HttpResponse(s.getvalue(), content_type="application/x-zip-compressed")
-#     resp['Content-Disposition'] = f'attachment; filename={zip_filename}'
-#     return resp
 
 
 class CodeView(DetailView):

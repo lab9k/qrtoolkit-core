@@ -1,6 +1,5 @@
 from django.urls import path
 from django.urls.conf import include
-from django.conf import settings
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework import routers
 from rest_framework.schemas import get_schema_view

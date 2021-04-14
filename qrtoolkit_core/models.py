@@ -2,6 +2,7 @@ import uuid
 import string
 import random
 
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -29,6 +30,7 @@ class ApiHit(models.Model):
 
 class Department(models.Model):
     name = models.CharField(max_length=128, unique=True)
+    users = models.ManyToManyField('auth.User', related_name='departments')
 
     def __str__(self) -> str:
         return f'{self.name}'
