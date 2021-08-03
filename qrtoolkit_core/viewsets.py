@@ -11,7 +11,7 @@ class CodeViewSet(viewsets.ModelViewSet):
     serializer_class = QRCodeSerializer
     queryset = QRCode.objects.order_by('-last_updated')
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('mode', 'title', 'created', 'last_updated', 'uuid', 'department__name')
+    filterset_fields = ('mode', 'title', 'created', 'last_updated', 'uuid', 'department__name', 'short_uuid')
 
 
 class ApiHitFilterSet(FilterSet):

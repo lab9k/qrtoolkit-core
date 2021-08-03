@@ -2,9 +2,10 @@ import uuid
 import string
 import random
 
-from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+from qrtoolkit_core.validators import validate_is_api_mode_qrcode
 
 
 class ApiHit(models.Model):
@@ -14,6 +15,7 @@ class ApiHit(models.Model):
         KIOSK = 'kiosk', _('Kiosk')
         JSON = 'json', _('Json Response')
         REDIRECT = 'redirect', _('Redirect')
+        API_CALL = 'api_call', _('Api Call')
         ERROR = 'error', _('Error')
 
     hit_date = models.DateTimeField(auto_now_add=True)
@@ -30,7 +32,7 @@ class ApiHit(models.Model):
 
 class Department(models.Model):
     name = models.CharField(max_length=128, unique=True)
-    users = models.ManyToManyField('auth.User', related_name='departments')
+    users = models.ManyToManyField('auth.User', related_name='departments', blank=True)
 
     def __str__(self) -> str:
         return f'{self.name}'
@@ -48,6 +50,9 @@ class LinkUrl(models.Model):
         on_delete=models.CASCADE,
         related_name='urls')
 
+    def __str__(self):
+        return f'"{self.name}" on code: "{self.code.title}"'
+
     class Meta:
         ordering = ['-priority']
 
@@ -56,7 +61,8 @@ QR_MODE_HELP_TEXT = """
 Sets the mode this code is in.<br/>
 Kiosk Mode: Show buttons to choose a link from<br/>
 Redirect Mode: Instantly redirects to the url with the highest priority.<br/>
-Information Page Mode: Show basic info with links to different urls
+Information Page Mode: Show basic info with links to different urls.<br/>
+Api call Mode: Will look for ApiCall's in the database that correspond to the selected link_url, and execute them. (Extended Kiosk mode)
 """
 
 
@@ -66,6 +72,7 @@ class QRCode(models.Model):
         KIOSK = 'kiosk', _('Kiosk Mode')
         REDIRECT = 'redirect', _('Redirect Mode')
         INFO_PAGE = 'info_page', _('Information Page Mode')
+        API_CALL = 'api_call', _('Api call Mode')
 
     title = models.CharField(blank=True, default='', max_length=100, unique=True)
     department = models.ForeignKey(
@@ -91,9 +98,9 @@ class QRCode(models.Model):
     last_updated = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        if (not self.short_uuid) or (QRCode.objects.filter(short_uuid=self.short_uuid).count() > 0):
+        if (not self.short_uuid) or (QRCode.objects.filter(short_uuid=self.short_uuid).exclude(pk=self.pk).count() > 0):
             short = random_string()
-            while QRCode.objects.filter(short_uuid=short).count() > 0:
+            while QRCode.objects.filter(short_uuid=short).exclude(pk=self.pk).count() > 0:
                 short = random_string()
             self.short_uuid = short
         return super(QRCode, self).save(*args, **kwargs)
@@ -102,6 +109,25 @@ class QRCode(models.Model):
         if self.department is not None:
             return f'{self.title}, {self.department.name}'
         return f'{self.title}'
+
+
+class ApiCall(models.Model):
+    url = models.URLField()
+    link_url = models.ForeignKey(LinkUrl, on_delete=models.CASCADE, related_name='api_calls',
+                                 validators=[validate_is_api_mode_qrcode])
+    payload = models.TextField()
+
+    def __str__(self):
+        return f'link: {self.link_url_id}: {self.url}'
+
+
+class Header(models.Model):
+    api_call = models.ForeignKey(ApiCall, on_delete=models.CASCADE, related_name='headers')
+    key = models.CharField(max_length=128)
+    value = models.CharField(max_length=128)
+
+    def __str__(self):
+        return f'{self.key}'
 
 
 def random_string():

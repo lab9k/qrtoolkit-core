@@ -4,7 +4,7 @@
 
 {% block extrahead %}
     {{ block.super }}
-    <script src="{% static 'js/qr-code-scanner.min.js' %}"></script>
+    <script src="{% static 'qrtoolkit_core/js/qr-code-scanner.min.js' %}"></script>
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -16,8 +16,12 @@
 
 {% block content %}
     <qr-code-scanner id="myScanner"></qr-code-scanner>
-    <a href="../add?uuid=%uuid%" style="display: none;visibility: hidden" id="new-code"></a>
-    <a href="../%id%/change" style="display: none;visibility: hidden" id="update-code"></a>
+    <form method="post" id="cForm">
+        {% csrf_token %}
+        <input name="short_uuid" value="" style="display: none;visibility: hidden" id="update-code"/>
+        <button type="submit" id="submitBtn" style="display: none;visibility: hidden"></button>
+    </form>
+
     <pre>
         <code id="error"></code>
         <code id="response"></code>
@@ -27,25 +31,29 @@
         const response = document.getElementById('response');
         const scanner = document.getElementById('myScanner');
 
-        scanner.setAttribute('allowed-hosts', ['qr.stad.gent', 'localhost:8000']);
+        scanner.setAttribute('allowed-hosts', ['qr.stad.gent',
+            'localhost:8080', 'localhost:8000',
+            'qrredirect.servicesdv.local',
+            'qtoolkitsite.servicesqa.local/']);
         // scanner.setAttribute('authorization', 'basic ' + btoa('foo:bar'));
 
+        scanner.setAttribute('only-parse', true);
+
         scanner.addEventListener('error', async ({detail}) => {
-            if (detail[0].status === 404) {
-                const url = new URL(detail[0].url)
-                const newCodeLink = document.getElementById('new-code')
-                newCodeLink.href = newCodeLink.href.replace('%uuid%', url.pathname.replace(/\//g, ''))
-                newCodeLink.click();
-            } else {
-                error.innerText = detail[0].message
-            }
+            error.innerText = detail[0].message;
         });
         scanner.addEventListener('decode', async ({detail}) => {
-            const code = await detail[0].json()
+            console.log(detail)
+            const uuid = detail[0]
             const updateCodeLink = document.getElementById('update-code');
-            updateCodeLink.href = updateCodeLink.href.replace('%id%', code.id)
-            updateCodeLink.click()
-            response.innerText = JSON.stringify();
+            updateCodeLink.value = uuid;
+            const update = confirm(`Update qr code with id ${uuid}?`)
+            if (update) {
+                document.getElementById('submitBtn').click();
+            } else {
+                updateCodeLink.href = '../%id%/change';
+            }
+
         });
 
     </script>

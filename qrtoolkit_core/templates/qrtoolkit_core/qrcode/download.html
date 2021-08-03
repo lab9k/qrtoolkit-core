@@ -9,17 +9,44 @@
     </div>
 {% endblock %}
 
+{% block extrahead %}
+    <link rel="stylesheet" type="text/css" href="{% static 'qrtoolkit_core/css/download.css' %}">
+    <style>
+        img.loading {
+            background: transparent url({% static 'qrtoolkit_core/img/loading.gif' %}) no-repeat scroll center center;
+        }
+
+        ul.code-list {
+            -moz-column-count: 5;
+            -moz-column-gap: 20px;
+            -webkit-column-count: 5;
+            -webkit-column-gap: 20px;
+            column-count: 5;
+            column-gap: 20px;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-    <h3>Downloading codes for: </h3>
-    <ul>
+    <h3>Downloading {{ codes.count }} codes for: </h3>
+    <ul class="code-list">
         {% for code in codes %}
-            <li>{{ code }}</li>
+            <li data-key="{{ code.id }}" class="qrcode-id">{{ code.title }}</li>
         {% endfor %}
     </ul>
     <h3>Settings</h3>
-    <form method="post">
+    <form method="post" id="qr-settings-form">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Download</button>
+        <div class="inputs">
+            {{ form.as_p }}
+        </div>
+        <div class="example">
+            <p>Example qr code. Use this to check styling of the code</p>
+            <img src="http://qrcodeservice.herokuapp.com/?query=exampledata"
+                 alt="example qr code" class="loading" id="qrExample"/>
+        </div>
+        <button type="submit" class="button">Download</button>
+        <button type="reset" class="button">Reset</button>
     </form>
+    <script src="{% static 'qrtoolkit_core/js/download.form.js' %}"></script>
 {% endblock %}

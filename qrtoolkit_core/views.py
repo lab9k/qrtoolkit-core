@@ -2,14 +2,18 @@ from django.urls import reverse
 from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
 from rest_framework.response import Response
 from rest_framework.exceptions import NotAuthenticated
-from .models import ApiHit, QRCode
+from .models import ApiHit, QRCode, LinkUrl
 from django.http import Http404, HttpResponse
 from django.conf import settings
 from rest_framework.views import APIView
 from django.shortcuts import redirect
 from django.core.exceptions import ValidationError
 from django.views.generic import DetailView
+from django.shortcuts import get_object_or_404
 import uuid
+import logging
+
+logger = logging.getLogger('qrtoolkit_core.views')
 
 
 class CodeView(DetailView):
@@ -49,7 +53,7 @@ class QRCodeDetails(APIView):
 
         except (QRCode.DoesNotExist or ValidationError) as error:
             hit = ApiHit(code=None, action=ApiHit.ACTION_CHOICES.ERROR,
-                         message=f'code with "{str(short_uuid)}" does not exist.')
+                         message=f'code with id {{{str(short_uuid)}}} does not exist.')
             hit.save()
             raise Http404
 
@@ -86,6 +90,10 @@ class QRCodeDetails(APIView):
                 hit = ApiHit(code=qrcode, action=ApiHit.ACTION_CHOICES.BASIC_INFO)
                 hit.save()
                 return Response({'qrcode': qrcode}, template_name='qrtoolkit_core/qrcode/index.html')
+            if qrcode.mode == QRCode.REDIRECT_MODE_CHOICES.API_CALL:
+                hit = ApiHit(code=qrcode, action=ApiHit.ACTION_CHOICES.API_CALL)
+                hit.save()
+                return Response({'qrcode': qrcode}, template_name='qrtoolkit_core/qrcode/kiosk_call.html')
 
             return Response({'qrcode': qrcode}, template_name='qrtoolkit_core/qrcode/index.html')
 
@@ -93,3 +101,24 @@ class QRCodeDetails(APIView):
             code=qrcode, action=ApiHit.ACTION_CHOICES.JSON)
         hit.save()
         return redirect(to=f'{settings.API_URL}/qrcodes/{qrcode.id}/', permanent=False)
+
+
+def link_url_clicked(request, pk):
+    u = get_object_or_404(LinkUrl, pk=pk)
+    handle_api_calls(u)
+    return redirect(to=u.url, permanent=False)
+
+
+def handle_api_calls(url):
+    """
+    If the code has apicalls configured, fire them off.
+    :type url: LinkUrl
+    """
+    import requests
+    for api_call in url.api_calls.all():
+        headers = {}
+        for header in api_call.headers.all():
+            headers[header.key] = header.value
+        logger.info(f'posting api_call from {url.name} to {api_call.url}')
+        r = requests.post(api_call.url, api_call.payload, headers=headers)
+        logger.info(f'response: {r.content.decode("utf-8")}, status_code: {r.status_code}')

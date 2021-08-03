@@ -5,13 +5,19 @@ from .qr import create_qr_code
 
 
 def generate_qr_zip(codes, form):
+    """
+
+    :type codes: list[qrtoolkit_core.models.QRCode]
+    :type form: qrtoolkit_core.generator.forms.QrGenerateForm
+    """
     s = io.BytesIO()
 
     zf = zipfile.ZipFile(s, mode='w', compression=zipfile.ZIP_DEFLATED)
 
     for code in codes:
         code_buffer = create_qr_code(code, form)
-        zf.writestr(f'{code.title}.{form.cleaned_data["kind"]}', code_buffer)
+        filename = form.create_filename(code)
+        zf.writestr(filename, code_buffer)
 
     zf.close()
 

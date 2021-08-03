@@ -5,7 +5,7 @@
     {% for code in codes %}
     <div class="col-sm text-center">
       <p class="text-center">{{code.title}}</p>
-      <img src="https://qrcodeservice.herokuapp.com/?query={{ request.scheme }}://{{ request.get_host }}/{{code.uuid}}"
+      <img src="https://qrcodeservice.herokuapp.com/?query={{ request.scheme }}://{{ request.get_host }}/{{code.short_uuid}}"
         alt="{{ code.title }}" title="{{code.title}}.svg" />
     </div>
     {% endfor %}

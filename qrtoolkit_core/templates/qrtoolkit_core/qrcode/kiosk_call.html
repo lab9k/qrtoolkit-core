@@ -1,0 +1,18 @@
+{% extends 'qrtoolkit_core/layout.html' %} {% block content %}
+    <div class="container">
+        <h1 class="text-center mt-3">{{ qrcode.title }}</h1>
+        <div class="row">
+            {% for url in qrcode.urls.all %}
+                <div class="col-6 text-center mt-3">
+                    <a
+                            class="btn btn-info btn-lg btn-block text-dark btn-rnd"
+                            href="{% url 'link_url_clicked' pk=url.pk %}"
+                            role="button"
+                    >{{ url.name }}</a
+                    >
+                </div>
+            {% endfor %}
+        </div>
+        <ul></ul>
+    </div>
+{% endblock content %}

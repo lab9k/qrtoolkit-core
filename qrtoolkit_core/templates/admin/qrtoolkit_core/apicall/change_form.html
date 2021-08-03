@@ -1,0 +1,54 @@
+{% extends 'admin/change_form.html' %}
+
+{% block content %}
+    <label for="owner_codes">
+        Filter LinkUrls on QrCode
+        <select name="available codes" id="owner_codes">
+            <option value=""></option>
+            {% for code in owner_codes %}
+                <option value="{{ code.title }}">{{ code.title }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <script>
+        const SelectList = {
+            init: function () {
+                this.selectElem = document.getElementById("owner_codes");
+                console.log(this.selectElem);
+                this.linkUrlElem = document.getElementById("id_link_url");
+                console.log(this.linkUrlElem);
+                this.originalCodes = [...this.linkUrlElem];
+                this.selectElem.addEventListener('change', (ev) => {
+                    if (ev.target.value === "") {
+                        this.resetData();
+                    } else {
+                        this.setData(ev.target.value);
+                    }
+                });
+            },
+            setData: function (codeTitle) {
+                this.removeChildren();
+                this.originalCodes.filter(el => {
+                    return el.innerText.includes(codeTitle)
+                }).forEach(el => {
+                    this.linkUrlElem.appendChild(el);
+                })
+            },
+            resetData: function () {
+                this.removeChildren();
+                this.originalCodes.forEach(el => {
+                    this.linkUrlElem.appendChild(el);
+                })
+            },
+            removeChildren: function () {
+                while (this.linkUrlElem.lastElementChild) {
+                    this.linkUrlElem.removeChild(this.linkUrlElem.lastElementChild);
+                }
+            }
+        };
+        document.addEventListener('DOMContentLoaded', (event) => {
+            SelectList.init();
+        })
+    </script>
+    {{ block.super }}
+{% endblock %}

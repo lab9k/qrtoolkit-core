@@ -1,0 +1,23 @@
+#qr-settings-form .inputs {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#qr-settings-form .inputs p {
+    margin: 0 2rem;
+}
+
+#qr-settings-form .button {
+    padding: 0.5rem 1rem;
+}
+
+#qr-settings-form .button[type="reset"] {
+    background: #F55830;
+}
+
+#qr-settings-form .example img {
+    margin: 0 auto;
+    display: block;
+}

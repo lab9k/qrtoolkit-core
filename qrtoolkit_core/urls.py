@@ -34,7 +34,10 @@ def _get_code_routes():
     info_routes = [
         path('code/<slug:short_uuid>/', views.CodeView.as_view(), name='code-detail'),
     ]
-    return redirect_routes + info_routes
+    link_url_routes = [
+        path('call/<int:pk>/', views.link_url_clicked, name='link_url_clicked')
+    ]
+    return redirect_routes + info_routes + link_url_routes
 
 
 code_routes = _get_code_routes()

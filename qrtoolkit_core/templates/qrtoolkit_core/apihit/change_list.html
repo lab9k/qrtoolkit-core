@@ -36,15 +36,24 @@
                     data: [],
                     labels: []
                 };
-                const params = new URLSearchParams(window.location.search)
-                const querystring = params.has('code__department__name') ?
-                    `?dept=${params.get('code__department__name')}` : ''
+                //const params = new URLSearchParams(window.location.search)
+                //const querystring = params.has('code__department__name') ?
+                //  `?dept=${params.get('code__department__name')}` : ''
 
-                const url = `/api/apihits/${querystring}`
-                return fetch(url).then(res => res.json()).then(hits => {
+                //const url = `/api/apihits/${querystring}`
+                //return fetch(url).then(res => res.json()).then(hits => {
+                //    console.log(hits)
+                //    this.state.data = hits;
+                //    this.state.labels = [...new Set(hits.map(el => el.action))];
+                //})
+                return new Promise((resolve, reject) => {
+                    const hits_str = '{{ hits_json | safe }}'
+                    console.log(hits_str)
+                    const hits = JSON.parse(hits_str)
                     console.log(hits)
                     this.state.data = hits;
                     this.state.labels = [...new Set(hits.map(el => el.action))];
+                    resolve(hits)
                 })
             },
             drawChart() {
@@ -93,7 +102,8 @@
                                 if (clickedOn.length > 0) {
                                     const id = clickedOn[0]._index;
                                     const label = this.state.labels[id];
-                                    fetch(`/api/apihits/?action=${label}`).then(res => res.json()).then(hits => console.log(hits))
+                                    console.log(label)
+                                    // fetch(`/api/apihits/?action=${label}`).then(res => res.json()).then(hits => console.log(hits))
                                 }
                             }
                         }
@@ -105,8 +115,8 @@
                 const mapped_data = data.filter(el => el.action !== 'error').map(hit => {
                     console.log(hit);
                     return {
-                        t: moment.utc(hit.hit_date, "YYYY-MM-DDTHH:mm:ss.SSSSZ").startOf('day').format("YYYY-MM-DD"),
-                        y: Math.random() * 10
+                        t: moment.utc((new Date(hit.hit_date))).startOf('day').format("YYYY-MM-DD"),
+                        y: 0
                     }
                 }).reduce((acc, curr) => {
                     let found = acc.find(el => el.t === curr.t)
@@ -144,7 +154,7 @@
                                     data: data.filter(el => el.action === 'error').map(hit => {
                                         console.log(hit);
                                         return {
-                                            t: moment.utc(hit.hit_date, "YYYY-MM-DDTHH:mm:ss.SSSSZ").startOf('day').format("YYYY-MM-DD"),
+                                            t: moment.utc((new Date(hit.hit_date))).startOf('day').format("YYYY-MM-DD"),
                                             y: Math.random() * 10
                                         }
                                     }).reduce((acc, curr) => {
