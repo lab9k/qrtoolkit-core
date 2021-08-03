@@ -38,6 +38,9 @@ urlpatterns = [
     path('', include(qr_urls.code_routes))
 ]
 ```
+The code routes and api routes are split up, so that you can deploy the api and public service seperatly, and optionally deploy the api behind an api gateway. The api does not do authentication by default, but can also be configured with [django-rest-framework settings](https://www.django-rest-framework.org/api-guide/settings/).
+
+If you include the admin urls, the qrtoolkit models will automatically appear in the admin dashboard
 
 ### The following paths will be installed:
 
