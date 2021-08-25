@@ -1,1 +1,20 @@
-site_name: My Docs
+site_name: Qr Toolkit technical docs
+theme:
+  name: readthedocs
+  highlightjs: true
+  hljs_languages:
+    - shell
+    - python
+    - django
+    - js
+    - css
+repo_url: https://github.com/lab9k/qrtoolkit-core
+site_description: Technical documentation on how to work with the Qr Toolkit
+site_author: https://district09.gent/nl
+copyright: https://district09.gent/en
+nav:
+  - Introduction: 'index.md'
+  - Installation: 'installation.md'
+  - Getting Started: 'getting_started.md'
+markdown_extensions:
+  - smarty
