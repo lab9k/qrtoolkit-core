@@ -1,3 +1,1 @@
 # Qr Toolkit Core
-
--
