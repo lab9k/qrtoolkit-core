@@ -3,14 +3,11 @@
 ## Requirements
 
 ```shell
-# Install Django
-python3 -m pip install Django==3.0.11
-
-# Use the django-admin cli to start a project "myqrtoolkit" in the current directory
-django-admin startproject myqrtoolkit .
-
 # Install the qr-toolkit-core package
 python3 -m pip install django-qr-toolkit-core
+
+# Scaffold your Django project
+django-admin startproject myqrtoolkit .
 ```
 
 ## Usage
@@ -79,3 +76,92 @@ If you include the admin urls, the qrtoolkit models will automatically appear in
 | `departments/` | int:id     | This is a standard REST endpoint for Departments, all rest routes are included                             |
 | `urls/`        | int:id     | This is a standard REST endpoint for LinkUrls, all rest routes are included                                |
 | `openapi/`     | -          | This route contains the generated openapi schema, with more documentation on the api                       |
+
+### Migrations and superuser
+
+After all these steps you want to create the local database (sqlite by default), run the migrations the qrtoolkit provides, and create a superuser, so you can login locally
+
+```shell
+python manage.py migrate
+
+python manage.py createsuperuser # This command will propt you for input
+```
+
+### Running the server
+
+You can start the development server by issuing the following command
+
+```shell
+python manage.py runserver
+```
+
+When this command is running, you can navigate your browser to localhost:8000/admin , which will let you log in with the credentials you provided above (the superuser you created)
+
+### Creating a custom app
+
+You can create your own app, with your own models, which you can then link to specific qr codes.
+
+#### Scaffold the app
+
+```shell
+python manage.py startapp mycustomapp
+```
+
+#### Add the app to settings.py
+
+in settings.py, add your app to INSTALLED_APPS
+
+```python
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+
+    'qrtoolkit_core',
+    'mycustomapp'  # Make sure this is after qrtoolkit_core for customization to behave correctly
+]
+```
+
+#### Add a model
+
+in the file `mycustomapp/models.py` you can setup your own models.
+e.g. :
+
+```python
+from django.db import models
+from django.contrib.auth import get_user_model
+from qrtoolkit_core import models as qr_models
+
+
+class MyObject(models.Model):
+    title = models.CharField(max_length=255)
+    author = models.ForeignKey(to=get_user_model(), on_delete=models.CASCADE, related_name='user_objects')
+
+    qrcode = models.OneToOneField(to=qr_models.QRCode, related_name='myobject', on_delete=models.CASCADE)
+
+```
+
+#### create migrations for your model
+
+```shell
+python manage.py makemigrations
+python manage.py migrate # This command will run the created migrations, and update your local database
+```
+
+#### Add your model to the django admin
+
+in the file `mycustomapp/admin.py` add the following
+
+```python
+from django.contrib import admin
+from mycustomapp.models import MyObject
+
+@admin.register(MyObject)
+class MyObjectAdmin(admin.ModelAdmin):
+    pass
+```
+
+That's it! You now have access to your custom model in the django admin dashboard.

@@ -16,5 +16,6 @@ nav:
   - Introduction: 'index.md'
   - Installation: 'installation.md'
   - Getting Started: 'getting_started.md'
+  - Theming: 'theming.md'
 markdown_extensions:
   - smarty
