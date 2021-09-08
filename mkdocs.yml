@@ -14,10 +14,13 @@ site_author: https://district09.gent/nl
 copyright: https://district09.gent/en
 nav:
   - Introduction: 'index.md'
-  - Installation: 'installation.md'
   - Getting Started: 'getting_started.md'
   - Theming: 'theming.md'
+  - Models: 'models.md'
   - Modes: 'modes.md'
   - Api: 'api.md'
 markdown_extensions:
   - smarty
+plugins:
+  - search
+  - macros

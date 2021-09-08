@@ -55,6 +55,8 @@ Add in the default content, which you can find on github, or in your installed p
 
 `kiosk.html`
 
+{% raw %}
+
 ```django
 {% extends 'qrtoolkit_core/layout.html' %} {% block content %}
     <div class="container">
@@ -75,6 +77,8 @@ Add in the default content, which you can find on github, or in your installed p
 {% endblock content %}
 ```
 
+{% endraw %}
+
 Update the contents of the file. As an example, you can change the `btn-info` class on the button (<a\> tag) to `btn-warning`.
 
 Now the buttons in a kiosk qr code will have an orange color!
@@ -89,7 +93,7 @@ If you want this list to look differently, but still contain the core functional
 
 ### unregister the qrtoolkit_core admin models
 
-in the file `mycustomapp/admin.py` you have created in [the installation tutorial](installation.md).
+in the file `mycustomapp/admin.py` you have created in [the getting started tutorial](getting_started.md).
 
 ```python
 from qrtoolkit_core import models as qr_models
