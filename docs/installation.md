@@ -2,6 +2,24 @@
 
 ## Requirements
 
+### Local machine
+
+assuming you are developing on a local machine, you should have set up a virtual python environment. You can do this with the command below
+
+```shell
+python3 -m venv venv
+```
+
+You can then activate the environment in the current shell with the following command.
+
+```shell
+source ./venv/bin/activate
+```
+
+Detailed instructions on how to activate the virtual environment on different OS's are found [here](https://docs.python.org/3/library/venv.html#creating-virtual-environments)
+
+### Installing the qr toolkit
+
 ```shell
 # Install the qr-toolkit-core package
 python3 -m pip install django-qr-toolkit-core

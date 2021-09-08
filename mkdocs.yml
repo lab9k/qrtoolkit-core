@@ -17,5 +17,7 @@ nav:
   - Installation: 'installation.md'
   - Getting Started: 'getting_started.md'
   - Theming: 'theming.md'
+  - Modes: 'modes.md'
+  - Api: 'api.md'
 markdown_extensions:
   - smarty
