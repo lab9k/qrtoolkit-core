@@ -1,5 +1,11 @@
 # QR-Toolkit Core package
 
+## Documentation
+
+* [Full documentation](https://qr-toolkit-core.readthedocs.io/en/latest/)
+* [Example repository](https://github.com/lab9k/qr-toolkit-core-example)
+
+
 ## Installation
 
 ```shell
