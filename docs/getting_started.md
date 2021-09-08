@@ -1,5 +1,7 @@
 # Getting Started
 
+The example repository, which holds all changes made in these tutorials, can be [found here](https://github.com/lab9k/qr-toolkit-core-example)
+
 ## Requirements
 
 ### Local machine
