@@ -37,6 +37,9 @@ django-admin startproject myqrtoolkit .
 ```python
 INSTALLED_APPS = [
     # ... your other apps
+    'reversion',  # Adds history to certain models
+    'django_filters',  # This adds filters to the rest api
+    'rest_framework',  # This will enable the api
     'qrtoolkit_core'
 ]
 ```
@@ -87,13 +90,7 @@ If you include the admin urls, the qrtoolkit models will automatically appear in
 
 `api_routes`
 
-| path           | parameters | description                                                                                                |
-| -------------- | ---------- | ---------------------------------------------------------------------------------------------------------- |
-| `qrcodes/`     | int:id     | This is a standard REST endpoint for QrCodes, all rest routes are included                                 |
-| `apihits/`     | int:id     | This is a ReadOnlyViewset, meaning you can only do read operations on the ApiHit model (GET + GET with id) |
-| `departments/` | int:id     | This is a standard REST endpoint for Departments, all rest routes are included                             |
-| `urls/`        | int:id     | This is a standard REST endpoint for LinkUrls, all rest routes are included                                |
-| `openapi/`     | -          | This route contains the generated openapi schema, with more documentation on the api                       |
+More information on the api routes is available in the [api docs](api.md)
 
 ### Migrations and superuser
 
