@@ -45,6 +45,7 @@ class LinkUrl(models.Model):
                           default='',
                           help_text='redirect to external page')
     priority = models.FloatField(default=1)
+    visible = models.BooleanField(default=True, help_text='Sets the visibility for this link in KIOSK mode.')
     code = models.ForeignKey(
         to='QRCode',
         on_delete=models.CASCADE,
