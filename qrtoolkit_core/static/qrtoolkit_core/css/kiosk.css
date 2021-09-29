@@ -1,0 +1,269 @@
+html {
+    background: #fff;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.75;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+* {
+    font-family: "Fira Sans", sans-serif !important;
+}
+
+header.header {
+    position: relative;
+    margin-bottom: .3rem;
+    margin-top: .3rem;
+    padding: .3rem 0;
+    display: block;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-size: 100%;
+    vertical-align: baseline;
+    box-sizing: inherit;
+}
+
+header.header > .content-container {
+    display: flex;
+    align-items: center;
+    width: 80%;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    header.header > .content-container {
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+}
+
+.content-container > .site-logo {
+    margin-right: auto;
+    color: #23333a;
+
+    border-bottom: 0;
+    display: inline-flex;
+    align-items: center;
+    font-size: 0;
+}
+
+a.site-logo::before {
+    display: block;
+    width: 4rem;
+    background: url(https://stad.gent/themes/contrib/gent_base/build/styleguide/img/svg/build/logo--cyan.svg) no-repeat center center;
+    background-size: 100%;
+    content: '';
+    min-width: 4rem;
+    height: 3rem;
+}
+
+.h2-title {
+    width: 90%;
+    color: #23333a;
+    margin: 0 auto .8rem auto;
+    font-style: normal;
+    line-height: 1.5;
+    font: 600 1.3rem "Fira Sans", sans-serif;
+}
+
+.kiosk-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 80%;
+
+    padding: .4em .8em;
+
+    color: #0071a1;
+
+    background-color: #fff;
+    background-image: none;
+    background-size: 1px 0;
+    border: 2px solid #80bed9;
+    border-radius: 0.2rem;
+
+    transition: background-size .2s;
+
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.1;
+    text-decoration: none;
+    word-wrap: break-word;
+}
+
+.highlight-inner {
+    background-color: #f0f9fd;
+    padding: 1rem;
+}
+
+.footer-bottom {
+    -webkit-text-size-adjust: 100%;
+    font: 400 20px "Fira Sans", sans-serif;
+    line-height: 1.75;
+    color: #23333a;
+    box-sizing: inherit;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-size: 100%;
+    vertical-align: baseline;
+    margin: 0 auto;
+    max-width: 1280px;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    -webkit-box-align: baseline;
+    align-items: baseline;
+    -webkit-box-pack: start;
+    justify-content: flex-start;
+}
+
+.footer--column {
+    -webkit-text-size-adjust: 100%;
+    font: 400 20px "Fira Sans", sans-serif;
+    line-height: 1.75;
+    color: #23333a;
+    box-sizing: inherit;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-size: 100%;
+    vertical-align: baseline;
+    margin: 0 0 1.2rem;
+    text-align: center;
+    -webkit-box-ordinal-group: 3;
+    order: 2;
+    width: auto;
+}
+
+.partnership {
+    -webkit-text-size-adjust: 100%;
+    font: 400 20px "Fira Sans", sans-serif;
+    line-height: 1.75;
+    color: #23333a;
+    box-sizing: inherit;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    vertical-align: baseline;
+    font-size: .7rem;
+    text-align: center;
+    width: auto;
+    -webkit-box-ordinal-group: 2;
+    order: 1;
+    margin: 0 1.2rem 1.2rem 0;
+}
+
+.item-list {
+    -webkit-text-size-adjust: 100%;
+    font: 400 20px "Fira Sans", sans-serif;
+    line-height: 1.75;
+    color: #23333a;
+    text-align: center;
+    box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-size: 100%;
+    vertical-align: baseline;
+}
+
+.item-list > ul {
+    -webkit-text-size-adjust: 100%;
+    font: 400 20px "Fira Sans", sans-serif;
+    color: #23333a;
+    box-sizing: inherit;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    vertical-align: baseline;
+    line-height: inherit;
+    position: relative;
+    margin: 0;
+    font-size: .6rem;
+    list-style: none;
+    text-align: center;
+}
+
+.item-list > ul > li {
+    -webkit-text-size-adjust: 100%;
+    font: 400 20px "Fira Sans", sans-serif;
+    color: #23333a;
+    list-style: none;
+    box-sizing: inherit;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-size: 100%;
+    vertical-align: baseline;
+    font-family: "Fira Sans", sans-serif;
+    line-height: 2.1;
+    margin: 0 0 .2rem;
+    display: inline-block;
+    padding: 0 .4rem;
+}
+
+.item-list > ul > li > a {
+    -webkit-text-size-adjust: 100%;
+    font: 400 20px "Fira Sans", sans-serif;
+    list-style: none;
+    font-size: 100%;
+    box-sizing: inherit;
+    background-color: transparent;
+    border-bottom: 1px solid;
+    background-repeat: repeat-x;
+    background-position: 0 100%;
+    transition: background-size .2s;
+    background-size: 1px 0;
+    padding: .2em 0;
+    border-radius: 0.2rem 0.2rem 0 0;
+    text-decoration: none;
+    word-wrap: break-word;
+    font-weight: normal;
+    font-family: "Fira Sans", sans-serif;
+    line-height: 2.1;
+    color: #0071a1;
+    border-color: #009de0;
+    background-image: linear-gradient(to bottom, #e6f5fc 0, #e6f5fc 100%);
+}
+
+.icon-district09 {
+    -webkit-text-size-adjust: 100%;
+    font: 400 20px "Fira Sans", sans-serif;
+    color: #23333a;
+    text-align: center;
+    box-sizing: inherit;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-family: "gent-icons", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    speak: none;
+    text-decoration: none;
+    text-transform: none;
+    margin: 0 0 0 .5rem;
+    font-size: 1.3rem;
+    line-height: 1.6rem;
+    vertical-align: middle;
+}
+
+.icon-district09::after {
+    content: "\E02F";
+}
+
+@font-face {
+    font-family: "gent-icons";
+    src: url("https://stad.gent/themes/contrib/gent_base/build/styleguide/fonts/gent-icons.woff2?v=614") format("woff2");
+}
