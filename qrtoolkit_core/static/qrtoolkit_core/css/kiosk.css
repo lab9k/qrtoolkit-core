@@ -245,7 +245,7 @@ a.site-logo::before {
     border: 0;
     outline: 0;
     background: transparent;
-    font-family: "gent-icons", sans-serif;
+    font-family: "gent-icons";
     -webkit-font-smoothing: antialiased;
     font-style: normal;
     font-variant: normal;
@@ -259,11 +259,15 @@ a.site-logo::before {
     vertical-align: middle;
 }
 
-.icon-district09::after {
-    content: "\E02F";
+.icon-district09:before {
+    font-family: "gent-icons";
+    -webkit-font-smoothing: antialiased;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    speak: none;
+    text-decoration: none;
+    text-transform: none;
+    content: "";
 }
 
-@font-face {
-    font-family: "gent-icons";
-    src: url("https://stad.gent/themes/contrib/gent_base/build/styleguide/fonts/gent-icons.woff2?v=614") format("woff2");
-}

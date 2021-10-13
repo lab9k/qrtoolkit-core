@@ -1,6 +1,19 @@
 {% extends 'qrtoolkit_core/layout.html' %}
 {% load static %}
 {% block extra_css %}
+
+    <style>
+        @font-face {
+            font-family: "gent-icons";
+            src: url('{% static 'qrtoolkit_core/fonts/gent-icons.eot' %}');
+            src: url('{% static 'qrtoolkit_core/fonts/gent-icons.eot' %}') format('eot'),
+            url('{% static 'qrtoolkit_core/fonts/gent-icons.woff2' %}') format('woff2'),
+            url('{% static 'qrtoolkit_core/fonts/gent-icons.woff' %}') format('woff'),
+            url('{% static 'qrtoolkit_core/fonts/gent-icons.ttf' %}') format('truetype'),
+            url('{% static 'qrtoolkit_core/fonts/gent-icons.svg' %}') format('svg');
+            font-display: swap;
+        }
+    </style>
     <link rel="stylesheet" href="{% static 'qrtoolkit_core/css/kiosk.css' %}">
 {% endblock %}
 {% block content %}
@@ -12,48 +25,51 @@
         </div>
         <hr/>
     </header>
-    <section>
-        <div class="container highlight-inner">
-            <h2 class="h2-title">{{ qrcode.title }}</h2>
-            <div class="row">
-                {% for url in qrcode.urls.all %}
-                    {% if url.visible %}
-                        <div class="col-6 text-center mt-3">
-                            <a
-                                    class="kiosk-btn"
-                                    href="{{ url.url }}"
-                                    role="button"
-                            >{{ url.name }}</a>
-                        </div>
-                    {% endif %}
-                {% endfor %}
+    <main>
+        <section role="main">
+            <div class="container highlight-inner" role="grid">
+                <h2 class="h2-title" role="heading">{{ qrcode.title }}</h2>
+                <div class="row" role="row">
+                    {% for url in qrcode.urls.all %}
+                        {% if url.visible %}
+                            <div class="col-md-6 col-xs-12 text-center mt-3" role="cell">
+                                <a
+                                        class="kiosk-btn"
+                                        href="{{ url.url }}"
+                                        role="button"
+                                >{{ url.name }}</a>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="container">
+        <div class="footer-bottom content-container">
+            <div class="footer--column partnership">
+                <span>In samenwerking met District09</span>
+                <i aria-hidden="true" class="icon-district09"></i>
+            </div>
+            <div class="footer--column">
+                <h2 class="visually-hidden">Disclaimer links</h2>
+                <div class="item-list">
+                    <ul>
+                        <li>
+                            <a href="https://stad.gent/nl/node/806256">Gebruiksvoorwaarden</a>
+                        </li>
+                        <li>
+                            <a href="https://stad.gent/nl/node/806253">Privacy</a>
+                        </li>
+                        <li>
+                            <a href="https://stad.gent/nl/responsible-disclosure">Responsible disclosure</a>
+                        </li>
+                        <li>
+                            <a href="https://stad.gent/nl/node/806255">Toegankelijkheidsverklaring</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-    </section>
-    <div class="footer-bottom content-container">
-        <div class="footer--column partnership">
-
-            <span>In samenwerking met District09</span>
-            <i aria-hidden="true" class="icon-district09"></i>
-        </div>
-        <div class="footer--column">
-            <h2 class="visually-hidden">Disclaimer links</h2>
-            <div class="item-list">
-                <ul>
-                    <li>
-                        <a href="https://stad.gent/nl/node/806256">Gebruiksvoorwaarden</a>
-                    </li>
-                    <li>
-                        <a href="https://stad.gent/nl/node/806253">Privacy</a>
-                    </li>
-                    <li>
-                        <a href="https://stad.gent/nl/responsible-disclosure">Responsible disclosure</a>
-                    </li>
-                    <li>
-                        <a href="https://stad.gent/nl/node/806255">Toegankelijkheidsverklaring</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    </footer>
 {% endblock content %}
