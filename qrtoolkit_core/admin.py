@@ -181,7 +181,7 @@ class QRCodeAdmin(admin.ModelAdmin):
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
-    pass
+    filter_horizontal = ('users',)
 
 
 class HeaderInline(admin.TabularInline):

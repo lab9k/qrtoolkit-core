@@ -271,3 +271,7 @@ a.site-logo::before {
     content: "";
 }
 
+.qr-intro {
+    width: 90%;
+    margin: 0 auto;
+}

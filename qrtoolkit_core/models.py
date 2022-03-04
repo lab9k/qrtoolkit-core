@@ -43,7 +43,8 @@ class LinkUrl(models.Model):
                             default='', help_text='Name of the url. Used in buttons and links when a code is scanned.')
     url = models.URLField(blank=True,
                           default='',
-                          help_text='redirect to external page')
+                          help_text='redirect to external page',
+                          max_length=800)
     priority = models.FloatField(default=1)
     visible = models.BooleanField(default=True, null=True, blank=True,
                                   help_text='Sets the visibility for this link in KIOSK mode.')
@@ -91,6 +92,7 @@ class QRCode(models.Model):
     )
 
     basic_info = models.TextField(blank=True, default='')
+    kiosk_introduction = models.TextField(blank=True, default='')
 
     mode = models.CharField(
         max_length=16, choices=REDIRECT_MODE_CHOICES.choices, default=REDIRECT_MODE_CHOICES.REDIRECT,
