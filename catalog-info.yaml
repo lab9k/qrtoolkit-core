@@ -12,6 +12,8 @@ metadata:
     - url: https://qr.stad.gent
       title: Admin Dashboard
       icon: dashboard
+  annotations:
+    backstage.io/techdocs-ref: dir:.
 spec:
   type: website
   lifecycle: production
