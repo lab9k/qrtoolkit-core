@@ -24,3 +24,4 @@ markdown_extensions:
 plugins:
   - search
   - macros
+  - techdocs-core
