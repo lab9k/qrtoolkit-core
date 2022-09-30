@@ -92,7 +92,7 @@ class QRCode(models.Model):
     )
 
     basic_info = models.TextField(blank=True, default='')
-    kiosk_introduction = models.TextField(blank=True, default='')
+    kiosk_introduction = models.TextField(blank=True, null=True, default='')
 
     mode = models.CharField(
         max_length=16, choices=REDIRECT_MODE_CHOICES.choices, default=REDIRECT_MODE_CHOICES.REDIRECT,

@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from .models import Department, LinkUrl, QRCode, ApiHit
 
@@ -28,3 +29,11 @@ class ApiHitSerializer(serializers.ModelSerializer):
     class Meta:
         model = ApiHit
         fields = '__all__'
+
+
+class UserSerializer(serializers.ModelSerializer):
+    departments = DepartmentSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = get_user_model()
+        exclude = ['password', 'user_permissions', 'groups']

@@ -23,6 +23,25 @@ User = get_user_model()
 admin.site.unregister(User)
 
 
+class ApiHitQrCodeFilter(admin.RelatedFieldListFilter):
+    title = 'QrCode'
+
+    def __init__(self, field, request, params, model, model_admin, field_path):
+        super().__init__(field, request, params, model, model_admin, field_path)
+        if not request.user.is_superuser:
+            self.lookup_choices = QRCode.objects.filter(department__in=request.user.departments.all()).values_list(
+                'pk', 'title')
+
+
+class ApiHitDepartmentFilter(admin.RelatedFieldListFilter):
+    title = 'Department'
+
+    def __init__(self, field, request, params, model, model_admin, field_path):
+        super().__init__(field, request, params, model, model_admin, field_path)
+        if not request.user.is_superuser:
+            self.lookup_choices = request.user.departments.all().values_list('pk', 'name')
+
+
 class DepartmentInline(admin.TabularInline):
     model = Department.users.through
 
@@ -37,7 +56,24 @@ class ApiHitAdmin(admin.ModelAdmin):
     readonly_fields = ('hit_date', 'action', 'code', 'message')
     list_display = ('code', 'hit_date', 'action', 'message')
     change_list_template = 'qrtoolkit_core/apihit/change_list.html'
-    list_filter = ('code__department__name',)
+
+    # list_filter = ('code__department__name', 'code__title')
+
+    def get_queryset(self, request):
+        qs = super(ApiHitAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(code__department__in=request.user.departments.all())
+
+    def get_list_filter(self, request):
+        if request.method == 'GET' and request.GET.get('code__department__id__exact', None) is not None:
+            return ('code__department', ApiHitDepartmentFilter), ('code', ApiHitQrCodeFilter)
+        return ('code__department', ApiHitDepartmentFilter),
+
+    def lookup_allowed(self, lookup, value):
+        if lookup in ('code__department__id__exact', 'code__id__exact'):
+            return True
+        return super(ApiHitAdmin, self).lookup_allowed(lookup, value)
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
@@ -45,7 +81,12 @@ class ApiHitAdmin(admin.ModelAdmin):
 
         hit_data = ApiHitSerializer(instance=cl.get_queryset(request), many=True).data
         extra_context['hits_json'] = JSONRenderer().render(hit_data).decode('utf-8')
-
+        if request.method == 'GET' and request.GET.get('code__id__exact', None) is not None and request.GET.get(
+                'code__department__id__exact', None) is None:
+            nq = request.GET.copy()
+            nq.pop('code__id__exact')
+            request.GET = nq
+            return super(ApiHitAdmin, self).changelist_view(request, extra_context=extra_context)
         return super(ApiHitAdmin, self).changelist_view(request, extra_context=extra_context)
 
 

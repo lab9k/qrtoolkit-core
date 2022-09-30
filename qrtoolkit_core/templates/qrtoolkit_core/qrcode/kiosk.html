@@ -29,7 +29,9 @@
         <section role="main">
             <div class="container highlight-inner" role="grid">
                 <h2 class="h2-title" role="heading">{{ qrcode.title }}</h2>
-                <p class="qr-intro">{{ qrcode.kiosk_introduction }}</p>
+                <div class="qr-intro">
+                    {{ qrcode.kiosk_introduction|linebreaks }}
+                </div>
                 <div class="row" role="row">
                     {% for url in qrcode.urls.all %}
                         {% if url.visible %}

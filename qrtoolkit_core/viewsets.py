@@ -1,9 +1,13 @@
+from rest_framework.generics import GenericAPIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets, mixins, response
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter, DateTimeFilter, NumberFilter
 
-from .serializers import QRCodeSerializer, ApiHitSerializer, DepartmentSerializer, LinkUrlSerializer
+from .serializers import QRCodeSerializer, ApiHitSerializer, DepartmentSerializer, LinkUrlSerializer, UserSerializer
 from .models import ApiHit, QRCode, Department, LinkUrl
 
 
@@ -47,3 +51,12 @@ class LinkUrlViewSet(mixins.CreateModelMixin,
     pagination_class = None
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('code',)
+
+
+class UserViewSet(APIView):
+    permission_classes = [IsAuthenticated, ]
+    http_method_names = ['get', 'head', 'options']
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)

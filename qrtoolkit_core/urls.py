@@ -12,8 +12,10 @@ router.register(r'qrcodes', viewsets.CodeViewSet, basename='api-code')
 router.register(r'apihits', viewsets.ApiHitViewSet, basename='api-apihit')
 router.register(r'departments', viewsets.DepartmentViewSet, basename='api-department')
 router.register(r'urls', viewsets.LinkUrlViewSet, basename='api-url')
+# router.register(r'users', viewsets.UserViewSet, basename='api-user')
 
 api_routes = [path('', include(router.urls)),
+              path('users/', viewsets.UserViewSet.as_view(), name='api-user'),
               path('openapi/', get_schema_view(
                   title="Qr code Toolkit API",
                   description="Stad Gent qr code toolkit",
