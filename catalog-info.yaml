@@ -1,0 +1,21 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: qr-toolkit-dashboard
+  description: District09 Qr toolkit
+  labels:
+    project: SCORE
+  tags:
+    - python
+    - qr
+  links:
+    - url: https://qr.stad.gent
+      title: Admin Dashboard
+      icon: dashboard
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+spec:
+  type: website
+  lifecycle: production
+  owner: servicefactory
+  system: public-websites
