@@ -77,7 +77,7 @@ class QRCode(models.Model):
         INFO_PAGE = 'info_page', _('Information Page Mode')
         API_CALL = 'api_call', _('Api call Mode')
 
-    title = models.CharField(blank=True, default='', max_length=100, unique=True)
+    title = models.CharField(blank=True, default='', max_length=100)
     department = models.ForeignKey(
         to=Department, on_delete=models.CASCADE, related_name='qrcodes', blank=True, null=True)
 
